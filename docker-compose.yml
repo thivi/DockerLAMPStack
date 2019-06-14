@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  apache:
+    build: './apache'
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    networks: 
+      - frontend
+      - backend
+    volumes:
+      - ./public_html:/usr/local/apache2/htdocs
+      - ./cert/:/usr/local/apache2/cert/
+    depends_on:
+      - php
+      - mysql
+  php:
+    build: './php'
+    restart: always
+    networks: 
+      - backend
+    volumes:
+      - ./public_html:/usr/local/apache2/htdocs
+      - ./tmp:/usr/local/tmp
+  mysql:
+    build: './mysql'
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - ./database:/var/lib/mysql
+networks: 
+  backend:
+  frontend:
